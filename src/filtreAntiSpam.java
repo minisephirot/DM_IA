@@ -16,6 +16,10 @@ public class filtreAntiSpam {
         args[1] = "100";
         args[2] = "200";
 
+        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Debug ? Oui:true | Non :false");
+        boolean debug = sc.nextBoolean();
+
         //Dictionnaire
         System.out.println("Chargement du dictionnaire...");
         String[] dictionnaire = filtreAntiSpam.charger_dictionnaire();
@@ -26,8 +30,10 @@ public class filtreAntiSpam {
         System.out.println("Apprentissage...");
         int nbham = Objects.requireNonNull(new File("baseapp/ham").list()).length;
         int nbspam = Objects.requireNonNull(new File("baseapp/spam").list()).length;
-        System.out.println("\t-Combien de SPAM dans la base d’apprentissage ? "+nbspam);
-        System.out.println("\t-Combien de HAM dans la base d’apprentissage ? "+nbham);
+        System.out.println("\t-Combien de SPAM de la base d’apprentissage ? Min = 1, Max = "+nbspam);
+        nbspam = sc.nextInt();
+        System.out.println("\t-Combien de HAM de la base d’apprentissage ? Min = 1, Max = "+nbham);
+        nbham = sc.nextInt();
         //Création des b_spam et b_ham
         HashMap<String,Integer> probaSpam = new HashMap<>(dictionnaire.length); //On sait que l'on va utiliser uniquement les mots du dictionnaire.
         for (String mot : dictionnaire) {
@@ -45,11 +51,17 @@ public class filtreAntiSpam {
             System.out.println(Arrays.asList("Ceci est un test, il n'est pas important".split("[\\s\\p{Punct}]+")));
         }
         //Apprentissage des SPAM:
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < nbspam; i++) {
             HashMap<String,Integer> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File("baseapp/spam/"+i+".txt"));
             filtreAntiSpam.mergeValues(probaSpam,vecteurx);
         }
-        System.out.println("Init des proba de spam :"+Collections.singletonList(probaSpam));
+        //Apprentissage des HAM:
+        for (int i = 0; i < nbham; i++) {
+            HashMap<String,Integer> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File("baseapp/ham/"+i+".txt"));
+            filtreAntiSpam.mergeValues(probaHam,vecteurx);
+        }
+        System.out.println("Après lecture des spam :"+Collections.singletonList(probaSpam));
+        System.out.println("Après lecture des ham :"+Collections.singletonList(probaHam));
 
     }
 
