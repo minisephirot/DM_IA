@@ -28,13 +28,13 @@ public class filtreAntiSpam {
         if (debug) System.out.println("Liste des mots :"+Arrays.asList(dictionnaire)+"\n");
 
         //Apprentissage
-        System.out.println("Apprentissage...");
         double nbham = Objects.requireNonNull(new File("baseapp/ham").list()).length;
         double nbspam = Objects.requireNonNull(new File("baseapp/spam").list()).length;
         System.out.println("-Combien de SPAM de la base d’apprentissage ? Min = 1, Max = "+nbspam);
         nbspam = sc.nextInt();
         System.out.println("-Combien de HAM de la base d’apprentissage ? Min = 1, Max = "+nbham);
         nbham = sc.nextInt();
+        System.out.println("Apprentissage...");
 
         //Création des b_spam et b_ham
         HashMap<String,Double> probaSpam = new HashMap<>(dictionnaire.length); //On sait que l'on va utiliser uniquement les mots du dictionnaire.
@@ -82,7 +82,7 @@ public class filtreAntiSpam {
         if (debug) System.out.println("Probabilité qu'un message soit un spam vs Probabilité qu'un message soit un ham = "+ pYegalSpam+" contre "+ pYegalHam);
 
         //Tests
-        System.out.println("Tests...");
+        System.out.println("\nTests...");
         // p(X = x) que l'on obtiens via les probabilitées totales :
         // p(X = x) = P(X = x , Y = SPAM) + P(X = x , Y = HAM)
         // Et P(X = x , Y = SPAM) = P(X = x | Y = SPAM) * P(Y = SPAM)
@@ -109,7 +109,7 @@ public class filtreAntiSpam {
                 nberreur++;
             }
         }
-        double erreurSpam = (nberreur/nbtestspam)*10/10;
+        double erreurSpam = (nberreur/nbtestspam)*100d*10/10;
 
         nberreur = 0d;
         for (int i = 0; i < nbtestham ; i++) {
@@ -133,7 +133,7 @@ public class filtreAntiSpam {
             }
         }
 
-        double erreurHam = (nberreur/nbtestham)*10/10;
+        double erreurHam = (nberreur/nbtestham)*100d*10/10;
         double nbtotaltest = nbtestham + nbtestspam;
         double erreurTotale = (erreurHam * (nbtestham/nbtotaltest)) + (erreurSpam * (nbtestspam/nbtotaltest));
         System.out.println("Erreur de test sur les "+nbtestspam+" SPAM : "+erreurSpam+" %");
@@ -154,7 +154,6 @@ public class filtreAntiSpam {
         double res = 1d;
         for(Map.Entry<String, Double> entry : frequency.entrySet()) {
             String key = entry.getKey();
-            Double value = entry.getValue();
 
             double motPresent = presence.get(key);
             if (motPresent >= 1d){
