@@ -113,7 +113,7 @@ public class filtreAntiSpam {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				System.out.println("Done");
+				System.out.println("Creation de "+args[1] + ".ser terminee");
 	        }
 	        
 		    //Tests
