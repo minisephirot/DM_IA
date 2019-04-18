@@ -1,6 +1,16 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class filtreAntiSpam {
 
@@ -12,7 +22,7 @@ public class filtreAntiSpam {
             System.out.println("Utilisation : filtreAntiSpam 'dossier contenant les spams/ham' 'nb d'apprentissage sur spam' 'nb d'appentissage sur ham'");
             System.out.println("Utilisation : apprendFiltre 'nom du fichier sortie' 'dossier contenant les spams/ham' 'nb de spam de la base d'apprentissage' 'nb de ham de la base d'apprentissage'");
             System.out.println("Utilisation : filtreMail 'nom du classificateur a utiliser' 'message a tester'");
-            System.exit(0);
+            System.exit(1);
         }
         
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
@@ -86,6 +96,26 @@ public class filtreAntiSpam {
 	        double pYegalHam = 1d - pYegalSpam;
 	        if (debug) System.out.println("Probabilit√© qu'un message soit un spam vs Probabilit√© qu'un message soit un ham = "+ pYegalSpam+" contre "+ pYegalHam);
 	        
+	        if(Objects.equals(args[0], "apprendFiltre")) {	//serialize si l'option a ete choisie
+	        	System.out.println("Serialization...");
+	        	Classifieur classifieur = new Classifieur(probaSpam, probaHam, pYegalSpam, pYegalHam);
+	        	File fichier =  new File(args[1] + ".ser") ;
+
+	        	// ouverture d'un flux sur un fichier
+	        	ObjectOutputStream oos;
+				try {
+					oos = new ObjectOutputStream(new FileOutputStream(fichier));
+		        	 // sÈrialization de l'objet
+		        	oos.writeObject(classifieur) ;
+		        	oos.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+				System.out.println("Done");
+	        }
+	        
 		    //Tests
 	        if(Objects.equals(args[0], "filtreAntiSpam")) {		// on ne fait les tests que dans le filtre complet
 	        	double nbtestspam = Integer.parseInt(args[2]);
@@ -148,9 +178,51 @@ public class filtreAntiSpam {
 		        System.out.println("Erreur de test sur les "+nbtestham+" HAM : "+erreurHam+" %");
 		        System.out.println("Erreur totale sur les "+nbtotaltest+" mails : "+erreurTotale+" %");
 	        }
-        }else {
-        	
-        	// TODO FILTER UN SEUL MAIL
+        }else {// FILTER UN SEUL MAIL
+        	System.out.println("Chargement du dictionnaire...");
+	        String[] dictionnaire = filtreAntiSpam.charger_dictionnaire();
+	        System.out.println("Dictionnaire charg√©. "+dictionnaire.length+" mots ont √©t√© enregistr√©s.");
+	        if (debug) System.out.println("Liste des mots :"+Arrays.asList(dictionnaire)+"\n");
+	        
+	        HashMap<String,Double> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File(args[2]));
+	        
+	        File fichier =  new File(args[1]) ;
+	        // ouverture d'un flux sur un fichier
+	        ObjectInputStream ois;
+	        Classifieur classifieur = null;
+			try {
+				ois = new ObjectInputStream(new FileInputStream(fichier));
+				// dÈsÈrialization de l'objet
+				classifieur = (Classifieur)ois.readObject() ;
+				ois.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				System.out.println("Classifieur non trouvÈ");
+				System.exit(1);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+	       
+            double pXegalxSachantYegalSpam = getPdeXsachantYegalSpamOuHam(classifieur.probaSpam,vecteurx);
+            double pXegalxSachantYegalHam = getPdeXsachantYegalSpamOuHam(classifieur.probaHam,vecteurx);
+            double pDeXetYegalSpam = pXegalxSachantYegalSpam * classifieur.pYegalSpam;
+            double pDeXetYegalHam = pXegalxSachantYegalHam * classifieur.pYegalHam;
+            double pDeXegalx = pDeXetYegalHam + pDeXetYegalSpam;
+
+            double pDeYegalSpamSachantXegalx = (1d/pDeXegalx) * classifieur.pYegalSpam * pXegalxSachantYegalSpam ;
+            double pDeYegalHamSachantXegalx = (1d/pDeXegalx) * classifieur.pYegalHam * pXegalxSachantYegalHam;
+            
+            boolean isSpam = filtreAntiSpam.isSpam(pDeYegalSpamSachantXegalx,pDeYegalHamSachantXegalx);
+            System.out.print("D'apres ' "+ args[1]+"', le message '"+args[2]+"' est un ");
+            if (isSpam){
+                System.out.print("SPAM !\n");
+            }else{
+                System.out.print("HAM ! \n");
+            }
         }
     }
 
