@@ -68,14 +68,21 @@ public class filtreAntiSpam {
 	            System.out.println(Arrays.asList("Ceci est un test, il n'est pas important".split("[\\s\\p{Punct}]+"))+"\n");
 	        }
 	
+	        String apprentissage = "";
+	        if(Objects.equals(args[0], "filtreAntiSpam")){
+	        	apprentissage = "baseapp";
+	        }else {
+	        	apprentissage = args[2];
+	        }
+	        
 	        //Apprentissage des SPAM:
 	        for (int i = 0; i < nbspam; i++) {
-	            HashMap<String,Double> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File("baseapp/spam/"+i+".txt"));
+	            HashMap<String,Double> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File(apprentissage+"/spam/"+i+".txt"));
 	            filtreAntiSpam.mergeValues(probaSpam,vecteurx);
 	        }
 	        //Apprentissage des HAM:
 	        for (int i = 0; i < nbham; i++) {
-	            HashMap<String,Double> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File("baseapp/ham/"+i+".txt"));
+	            HashMap<String,Double> vecteurx =  filtreAntiSpam.lire_message(dictionnaire,new File(apprentissage+"/ham/"+i+".txt"));
 	            filtreAntiSpam.mergeValues(probaHam,vecteurx);
 	        }
 	        if (debug){
