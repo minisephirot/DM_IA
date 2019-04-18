@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -15,15 +16,14 @@ import java.util.Scanner;
 public class filtreAntiSpam {
 
 
-    public static void main(String[] args) {
-
+    public static void main(String args[]) {
         //Init
         if ( !((args.length == 3 &&  Objects.equals(args[0], "filtreMail")) || (args.length == 4 &&  Objects.equals(args[0], "filtreAntiSpam")) || (args.length == 5 &&  Objects.equals(args[0], "apprendFiltre"))) ){
             System.out.println("Utilisation : filtreAntiSpam 'dossier contenant les spams/ham' 'nb d'apprentissage sur spam' 'nb d'appentissage sur ham'");
             System.out.println("Utilisation : apprendFiltre 'nom du fichier sortie' 'dossier contenant les spams/ham' 'nb de spam de la base d'apprentissage' 'nb de ham de la base d'apprentissage'");
             System.out.println("Utilisation : filtreMail 'nom du classificateur a utiliser' 'message a tester'");
             System.exit(1);
-        }
+        }        
         
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Debug ? true/false");
@@ -224,6 +224,7 @@ public class filtreAntiSpam {
             double pDeYegalHamSachantXegalx = (1d/pDeXegalx) * classifieur.pYegalHam * pXegalxSachantYegalHam;
             
             boolean isSpam = filtreAntiSpam.isSpam(pDeYegalSpamSachantXegalx,pDeYegalHamSachantXegalx);
+            System.out.println("P(Y=SPAM | X=x) = "+pDeYegalSpamSachantXegalx+", P(Y=HAM | X=x) = "+pDeYegalHamSachantXegalx);
             System.out.print("D'apres ' "+ args[1]+"', le message '"+args[2]+"' est un ");
             if (isSpam){
                 System.out.print("SPAM !\n");
