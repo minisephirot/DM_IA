@@ -4,7 +4,7 @@ import java.util.*;
 
 public class filtreAntiSpam {
 
-    private static final boolean debug = true; // editer vrai si on veux voir des infos de debug
+    private static final boolean debug = false; // editer vrai si on veux voir des infos de debug
 
     public static void main(String args[]) {
         //Init
@@ -139,14 +139,14 @@ public class filtreAntiSpam {
     }
 
     //Methode qui return a > b pour de très petit nombres
-    private static boolean isSpam(double pDeYegalSpamSachantXegalx, double pDeYegalHamSachantXegalx) {
+    static boolean isSpam(double pDeYegalSpamSachantXegalx, double pDeYegalHamSachantXegalx) {
         double a = Math.log(pDeYegalSpamSachantXegalx);
         double b = Math.log(pDeYegalHamSachantXegalx);
         return a > b;
     }
 
     //Methode qui réalise la formule du diapo
-    private static double getPdeXsachantYegalSpamOuHam(HashMap<String, Double> frequency, HashMap<String, Double> presence){
+    static double getPdeXsachantYegalSpamOuHam(HashMap<String, Double> frequency, HashMap<String, Double> presence){
         double res = 1d;
         for(Map.Entry<String, Double> entry : frequency.entrySet()) {
             String key = entry.getKey();
@@ -165,7 +165,7 @@ public class filtreAntiSpam {
     }
 
     //Methode qui additionne message après message les effectifs de presence
-    private static void mergeValues(HashMap<String, Double> effectif, HashMap<String, Double> vecteurx) {
+    static void mergeValues(HashMap<String, Double> effectif, HashMap<String, Double> vecteurx) {
         for(Map.Entry<String, Double> entry : effectif.entrySet()) {
             String key = entry.getKey();
             Double value = entry.getValue();
@@ -174,7 +174,7 @@ public class filtreAntiSpam {
     }
 
     //Methode qui transforme les effectifs en fréquence avec le total de ham/spam
-    private static void effectifToFrequency(HashMap<String, Double> effectif, Double total) {
+    static void effectifToFrequency(HashMap<String, Double> effectif, Double total) {
         for(Map.Entry<String, Double> entry : effectif.entrySet()) {
             String key = entry.getKey();
             Double value = entry.getValue()/total;
@@ -183,7 +183,7 @@ public class filtreAntiSpam {
     }
 
     //Methode qui charge le dictionnaire initial
-    private static String[] charger_dictionnaire(){
+    static String[] charger_dictionnaire(){
         try {
             Scanner sc = new Scanner(new File("dictionnaire1000en.txt"));
             int i = 0; // Le dictionnaire a 1000 mots mais peux Ãªtre amené a changer.
@@ -212,7 +212,7 @@ public class filtreAntiSpam {
     }
 
     //Methode qui génère le vecteur de presence
-    private static HashMap<String,Double> lire_message(String[] dictionnaire, File file){
+    static HashMap<String,Double> lire_message(String[] dictionnaire, File file){
         HashMap<String,Double> res = new HashMap<>(dictionnaire.length); //On sait que l'on va utiliser uniquement les mots du dictionnaire.
         for (String mot : dictionnaire) {
             res.put(mot,0d);//par défault le mot ne se trouve pas dans le message, on entre simplement les clés.
