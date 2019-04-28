@@ -73,7 +73,7 @@ public class apprendFiltre {
             System.out.println("Probabilité qu'un message soit un spam vs Probabilité qu'un message soit un ham = " + pYegalSpam + " contre " + pYegalHam);
 
         System.out.println("Serialization...");
-        Classifieur classifieur = new Classifieur(probaSpam, probaHam, pYegalSpam, pYegalHam);
+        Classifieur classifieur = new Classifieur(probaSpam, probaHam, pYegalSpam, pYegalHam, nbspam, nbham);
         File fichier = new File(args[0] + ".ser");
 
         // ouverture d'un flux sur un fichier

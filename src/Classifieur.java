@@ -9,11 +9,15 @@ public class Classifieur implements Serializable{
 	HashMap<String,Double> probaHam;
 	double pYegalSpam;
 	double pYegalHam;
+	double nbrSpam;
+	double nbrHam;
 	
-	public Classifieur(HashMap<String,Double> pS,HashMap<String,Double> pH,double pYS,double pYH) {
+	public Classifieur(HashMap<String,Double> pS,HashMap<String,Double> pH,double pYS,double pYH, double nS, double nH) {
 		this.probaHam = pH;
 		this.probaSpam = pS;
 		this.pYegalHam = pYH;
 		this.pYegalSpam = pYS;
+		this.nbrSpam = nS;
+		this.nbrHam = nH;
 	}
 }
