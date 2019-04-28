@@ -24,7 +24,7 @@ public class apprendFiltreLigne {
 	        
 	        System.out.println("Chargement du dictionnaire...");
 	        String[] dictionnaire = filtreAntiSpam.charger_dictionnaire();
-	        System.out.println("Dictionnaire chargé. "+dictionnaire.length+" mots ont été enregistrés.");
+	        System.out.println("Dictionnaire chargÃ©. "+dictionnaire.length+" mots ont Ã©tÃ© enregistrÃ©s.");
 	        if (debug) System.out.println("Liste des mots :"+Arrays.asList(dictionnaire)+"\n");
 
 	        File fichier =  new File(args[0]) ;
@@ -33,12 +33,12 @@ public class apprendFiltreLigne {
 	        Classifieur classifieur = null;
 	        try {
 	            ois = new ObjectInputStream(new FileInputStream(fichier));
-	            // désérialization de l'objet
+	            // dÃ©sÃ©rialization de l'objet
 	            classifieur = (Classifieur)ois.readObject() ;
 	            ois.close();
 	        } catch (FileNotFoundException e) {
 	            e.printStackTrace();
-	            System.out.println("Classifieur non trouvé");
+	            System.out.println("Classifieur non trouvÃ©");
 	            System.exit(1);
 	        } catch (IOException | ClassNotFoundException e) {
 	            e.printStackTrace();
@@ -71,7 +71,7 @@ public class apprendFiltreLigne {
 	        	classifieur.nbrHam += 1;
 	        	filtreAntiSpam.mergeValues(classifieur.probaHam, vecteurx);
 	        	//retour a la frequence
-	        	filtreAntiSpam.effectifToFrequency(classifieur.probaHam, classifieur.nbrHam);
+	        	filtreAntiSpam.effectifToFrequency(classifieur.probaHam, classifieur.nbrHam + 2);
 	        }
   
 	        if (debug) {
@@ -83,7 +83,7 @@ public class apprendFiltreLigne {
 	        classifieur.pYegalSpam = classifieur.nbrSpam / (classifieur.nbrSpam + classifieur.nbrHam);
 	        classifieur.pYegalHam = 1d - classifieur.pYegalSpam;
 	        if (debug)
-	            System.out.println("Probabilité qu'un message soit un spam vs Probabilité qu'un message soit un ham = " + classifieur.pYegalSpam + " contre " + classifieur.pYegalHam);
+	            System.out.println("ProbabilitÃ© qu'un message soit un spam vs ProbabilitÃ© qu'un message soit un ham = " + classifieur.pYegalSpam + " contre " + classifieur.pYegalHam);
 
 	        System.out.println("Serialization...");
 	        File out = new File(args[0]);
@@ -92,7 +92,7 @@ public class apprendFiltreLigne {
 	        ObjectOutputStream oos;
 	        try {
 	            oos = new ObjectOutputStream(new FileOutputStream(out));
-	            // sérialization de l'objet
+	            // sÃ©rialization de l'objet
 	            oos.writeObject(classifieur);
 	            oos.close();
 	        } catch (IOException e) {
@@ -100,6 +100,6 @@ public class apprendFiltreLigne {
 	            e.printStackTrace();
 	            System.exit(1);
 	        }
-	        System.out.println("Modification de " + args[0] + " terminée (ajout de "+args[1]+" en tant que "+args[2] +")");
+	        System.out.println("Modification de " + args[0] + " terminÃ©e (ajout de "+args[1]+" en tant que "+args[2] +")");
 	    }
 }
