@@ -52,7 +52,7 @@ public class apprendFiltreLigne {
 	        	//inverse de filtreAntiSpam.effectifToFrequency(classifieur.probaSpam, classifieur.nbrSpam + 2) pour revenir a l'effectif
 	        	for(Map.Entry<String, Double> entry : classifieur.probaSpam.entrySet()) {
 	                key = entry.getKey();
-	                value = entry.getValue()*classifieur.nbrSpam + 2;
+	                value = entry.getValue()*(classifieur.nbrSpam + 2);
 	                classifieur.probaSpam.put(key,value);
 	            }
 	        	//ajout du message
@@ -64,7 +64,7 @@ public class apprendFiltreLigne {
 	        	//inverse de filtreAntiSpam.effectifToFrequency(classifieur.probaHam, classifieur.nbrHam) pour revenir a l'effectif
 	        	for(Map.Entry<String, Double> entry : classifieur.probaHam.entrySet()) {
 	                key = entry.getKey();
-	                value = entry.getValue()*classifieur.nbrHam;
+	                value = entry.getValue()*(classifieur.nbrHam + 2);
 	                classifieur.probaHam.put(key,value);
 	            }
 	        	//ajout du message
