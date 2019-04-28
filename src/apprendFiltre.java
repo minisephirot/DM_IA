@@ -35,7 +35,7 @@ public class apprendFiltre {
         }
         HashMap<String, Double> probaHam = new HashMap<>(dictionnaire.length); //On sait que l'on va utiliser uniquement les mots du dictionnaire.
         for (String mot : dictionnaire) {
-            probaHam.put(mot, 0d);//Le lissage ne s'applique pas pour ham.
+            probaHam.put(mot, 1d);//Le lissage ne s'applique pas pour ham.
         }
         if (debug) {
             System.out.println("Init des proba de spam :" + Collections.singletonList(probaSpam));
@@ -60,7 +60,7 @@ public class apprendFiltre {
         //On a compté l'effectif d'apparition des mots dans les 2 catégories, on doit maintenant diviser ces effectifs par
         //Leurs nombre respectif de spam/ham avec +2 pour les spam car nous lissons ces probabilitées.
         filtreAntiSpam.effectifToFrequency(probaSpam, nbspam + 2);
-        filtreAntiSpam.effectifToFrequency(probaHam, nbham);
+        filtreAntiSpam.effectifToFrequency(probaHam, nbham+2);
         if (debug) {
             System.out.println("\nFrequence d'apparition des mots (spam) :" + Collections.singletonList(probaSpam));
             System.out.println("Frequence d'apparition des mots (ham) :" + Collections.singletonList(probaHam));
